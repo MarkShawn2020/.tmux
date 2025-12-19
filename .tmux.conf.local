@@ -9,7 +9,7 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 bind -N "Split window vertically (Chinese)" | split-window -h -c "#{pane_current_path}"
 
 bind-key -n F5 "send-keys '/git-commit-with-context' \; run 'sleep 0.1' \; send-keys Enter \;"
-bind-key -n F6 run-shell 'n=$(($(tmux show-env -g TMUX_WIN_CTR 2>/dev/null | cut -d= -f2) + 1)); tmux set-env -g TMUX_WIN_CTR $n; tmux new-window -n "#$n" -c "#{pane_current_path}"; tmux send-keys cc Enter'
+bind-key -n F6 run-shell '~/.config/tmux/scripts/new-cc.sh'
 bind-key -n S-F6 "respawn-pane -k -c '#{pane_current_path}' ; send-keys 'cc' Enter"
 
 # : << 'EOF'
