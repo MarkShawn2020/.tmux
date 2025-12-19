@@ -1,3 +1,17 @@
+# 绑定 Ctrl+b w 直接关闭当前 pane（无需确认）
+bind w kill-pane
+
+# https://github.com/tmux-plugins/tmux-continuum
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+# 兼容中文输入法下的横向（左右）分屏，oh-my-tmux 默认是使用 _，但在搜狗输入法下，这个按键的实际表现是——
+bind -N "Split window vertically (Chinese)" | split-window -h -c "#{pane_current_path}"
+
+bind-key -n F5 "send-keys '/git-commit-with-context' \; run 'sleep 0.1' \; send-keys Enter \;"
+bind-key -n F6 run-shell '~/.config/tmux/scripts/bg-cc.sh'
+bind-key -n S-F6 respawn-pane -k -c "#{pane_current_path}" 'cc'
+
 # : << 'EOF'
 # Oh my tmux!
 # 💛🩷💙🖤❤️🤍
@@ -405,7 +419,8 @@ tmux_conf_urlscan_options="--compact --dedupe"
 # bind c new-window -c '#{pane_current_path}' #!important
 
 # display a message after toggling mouse support
-bind m run "cut -c3- '#{TMUX_CONF}' | sh -s _toggle_mouse" \; display 'mouse #{?#{mouse},on,off}'
+# 将 set 和 display 放在同一个 shell 中，确保显示的是更新后的状态
+bind m run "old=\$(tmux show -gv mouse); if [ \"\$old\" = 'on' ]; then tmux set -g mouse off; tmux display 'mouse off'; else tmux set -g mouse on; tmux display 'mouse on'; fi"
 
 # move status line to top
 #set -g status-position top
@@ -507,3 +522,5 @@ tmux_conf_uninstall_plugins_on_reload=true
 # "$@"
 # # /!\ do not remove the previous line
 # #     do not write below this line
+
+
