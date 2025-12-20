@@ -528,3 +528,11 @@ tmux_conf_uninstall_plugins_on_reload=true
 # #     do not write below this line
 
 
+
+# Fix mouse mode sync issues
+# 1. terminal-features mouse: prevents flicker when switching tmux windows/panes
+set -ga terminal-features "xterm*:mouse"
+set -ga terminal-features "iTerm*:mouse"
+
+# 2. client-focus-in hook: re-sync mouse when switching iTerm2 tabs
+set-hook -g client-focus-in 'set -g mouse off ; set -g mouse on'
