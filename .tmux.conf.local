@@ -1,20 +1,3 @@
-# 绑定 Ctrl+b w 直接关闭当前 pane（无需确认）
-bind w kill-pane
-
-# https://github.com/tmux-plugins/tmux-continuum
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-continuum'
-
-# 兼容中文输入法下的横向（左右）分屏，oh-my-tmux 默认是使用 _，但在搜狗输入法下，这个按键的实际表现是——
-bind -N "Split window vertically (Chinese)" | split-window -h -c "#{pane_current_path}"
-
-bind-key -n F5 "send-keys '/git-commit-with-context' \; run 'sleep 0.1' \; send-keys Enter \;"
-bind-key -n F6 run-shell '~/.tmux/scripts/new-cc.sh'
-bind-key -n S-F6 "respawn-pane -k -c '#{pane_current_path}' ; send-keys 'cc' Enter"
-
-# 新建 window 使用自增编号
-bind c run-shell '~/.tmux/scripts/new-window.sh'
-set-hook -g after-new-session 'run-shell "~/.tmux/scripts/new-window-rename.sh"'
 
 # : << 'EOF'
 # Oh my tmux!
@@ -405,7 +388,7 @@ tmux_conf_urlscan_options="--compact --dedupe"
 #set -g history-limit 10000
 
 # start with mouse mode enabled
-#set -g mouse on
+set -g mouse on
 
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
@@ -529,10 +512,27 @@ tmux_conf_uninstall_plugins_on_reload=true
 
 
 
-# Fix mouse mode sync issues
-# 1. terminal-features mouse: prevents flicker when switching tmux windows/panes
-set -ga terminal-features "xterm*:mouse"
-set -ga terminal-features "iTerm*:mouse"
 
-# 2. client-focus-in hook: re-sync mouse when switching iTerm2 tabs
-set-hook -g client-focus-in 'set -g mouse off ; set -g mouse on'
+# 在窗口活动后自动确保鼠标开启
+set-hook -g pane-focus-in 'set -g mouse on'
+
+
+
+# 绑定 Ctrl+b w 直接关闭当前 pane（无需确认）
+bind w kill-pane
+
+# https://github.com/tmux-plugins/tmux-continuum
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+# 兼容中文输入法下的横向（左右）分屏，oh-my-tmux 默认是使用 _，但在搜狗输入法下，这个按键的实际表现是——
+bind -N "Split window vertically (Chinese)" | split-window -h -c "#{pane_current_path}"
+
+bind-key -n F5 "send-keys '/git-commit-with-context' \; run 'sleep 0.1' \; send-keys Enter \;"
+bind-key -n F6 run-shell '~/.tmux/scripts/new-cc.sh'
+bind-key -n S-F6 "respawn-pane -k -c '#{pane_current_path}' ; send-keys 'cc' Enter"
+bind-key -n M-S-F6 run-shell '~/.tmux/scripts/swap-pane-from-other-window.sh'
+
+# 新建 window 使用自增编号
+bind c run-shell '~/.tmux/scripts/new-window.sh'
+set-hook -g after-new-session 'run-shell "~/.tmux/scripts/new-window-rename.sh"'
